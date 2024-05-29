@@ -26,6 +26,7 @@ def guess(state):
     excluded = []
     included = []
     correct = []
+    incorrect = []
     letters = []
     for word in state:
         items = word.split(":")
@@ -37,6 +38,11 @@ def guess(state):
         for item in items:
             if item[0] == "*":
                 correct.append([item[1],k])
+            k = k + 1
+        k = 0
+        for item in items:
+            if item[0] == "+":
+                incorrect.append([item[1],k])
             k = k + 1
     guesses = words[:]
     for item in correct:
@@ -50,7 +56,14 @@ def guess(state):
         print("len guesses = ", len(guesses))
         guesses = [g for g in guesses if letter == g[k]]
         print("len guesses = ", len(guesses))
-        print(guesses)
+        
+    #print("Guesses before excluding incorrect position letters:", guesses)
+    for letter, k in incorrect:
+        print(letter, k)
+        print("len guesses = ", len(guesses))
+        guesses = [g for g in guesses if letter != g[k]]
+        print("len guesses = ", len(guesses))
+        #print("Guesses after excluding incorrect position letters:", guesses)
     return guesses[0]
 
 
@@ -134,12 +147,28 @@ def test_actual_game():
     word = guess(state)
     print(word)
 
+def test_exclude_incorrect_position_letters():
+    state = []
+    word = guess(state)
+    print(word)
+    state = ["-g:+u:+i:-l:-d"]
+    word = guess(state)
+    print(word)
+    state = ["-g:+u:+i:-l:-d", "-b:*i:-j:-o:+u"]
+    word = guess(state)
+    print(word)
+    state = ["-g:+u:+i:-l:-d", "-b:*i:-j:-o:+u", "-f:*i:-c:*u:*s"]
+    word = guess(state)
+    print(word)
+    
+
 if __name__ == "__main__":
     print("HELLO!")
-    test_first_guess()
-    test_word_list_exists()
-    test_guess_with_included_letters()
-    test_guess_with_excluded_letters()
-    test_guess_with_positional_letters()
-    test_actual_game()
+    #test_first_guess()
+    #test_word_list_exists()
+    # test_guess_with_included_letters()
+    # test_guess_with_excluded_letters()
+    # test_guess_with_positional_letters()
+    #test_actual_game()
+    test_exclude_incorrect_position_letters()
     print("done.")
